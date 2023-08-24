@@ -1,7 +1,14 @@
 #ifndef MONTY_H
 #define MONTY_H
+#define  _GNU_SOURCE
 
-#include <stddef.h>
+/* Libraries */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <unistd.h>
+
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -9,7 +16,7 @@
  * @next: points to the next element of the stack (or queue)
  *
  * Description: doubly linked list node structure
- * for stack, queues, LIFO, FIFO
+ * for stack, queues, LIFO, FIFO Holberton project
  */
 typedef struct stack_s
 {
@@ -24,7 +31,7 @@ typedef struct stack_s
  * @f: function to handle the opcode
  *
  * Description: opcode and its function
- * for stack, queues, LIFO, FIFO 
+ * for stack, queues, LIFO, FIFO Holberton project
  */
 typedef struct instruction_s
 {
@@ -32,63 +39,56 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-#define INSTRUCTIONS { \
-		{"push", push},\
-		{"pall", pall},\
-		{"pint", pint},\
-		{"pop", pop},\
-		{"swap", swap},\
-		{"nop", nop},\
-		{"div", _div},\
-		{"mul", _mul},\
-		{"add", _add},\
-		{"sub", _sub},\
-		{"mod", mod},\
-		{"pchar", pchar},\
-		{"pstr", pstr},\
-		{"rotl", rotl},\
-		{"rotr", rotr},\
-		{NULL, NULL} \
-	}
 /**
-* struct help - argument for the current opcode
-* @data_struct: stack mode, stack (default) and queue
-* @argument: the arguments of the string
-*
-* Description: global structure used to pass data around the functions easily
-*/
-typedef struct help
+ * struct global_s - funtional data for project
+ * @n_lines: lines counter
+ * @stack_head: stack head
+ * @fp_struct: file
+ * @getl_info: line content
+ * @node_data: data node number
+ *
+ * Description: opcode and its function
+ * for stack, queues, LIFO, FIFO Holberton project
+ */
+typedef struct global_s
 {
-	int data_struct;
-	char *argument;
-} help;
-help global;
+	FILE *fp_struct;
+	stack_t *stack_head;
+	char *getl_info;
 
-extern int status;
+	int node_data;
+	unsigned int n_lines;
 
-void push(stack_t **stack, unsigned int line_cnt);
-void pall(stack_t **stack, unsigned int line_cnt);
-void pint(stack_t **stack, unsigned int line_cnt);
-void swap(stack_t **stack, unsigned int line_cnt);
-void pop(stack_t **stack, unsigned int line_cnt);
-void nop(stack_t **stack, unsigned int line_cnt);
-void _div(stack_t **stack, unsigned int line_cnt);
-void _add(stack_t **stack, unsigned int line_cnt);
-void _sub(stack_t **stack, unsigned int line_cnt);
-void _mul(stack_t **stack, unsigned int line_cnt);
-void mod(stack_t **stack, unsigned int line_cnt);
-void pchar(stack_t **stack, unsigned int line_cnt);
-void pstr(stack_t **stack, unsigned int line_cnt);
-void rotl(stack_t **stack, unsigned int line_count);
-void rotr(stack_t **stack, unsigned int line_count);
-void opcode(stack_t **stack, char *str, unsigned int line_cnt);
+} global_t;
 
-int is_digit(char *string);
-int isnumber(char *str);
+/* global Variable */
+extern global_t var;
 
-stack_t *add_node(stack_t **stack, const int n);
-stack_t *queue_node(stack_t **stack, const int n);
-void free_stack(stack_t *stack);
-size_t print_stack(const stack_t *stack);
+/* execute the matched opcode function */
+void execute_opcode(char *opcode);
+
+/* handle the head of a doubly linked list */
+void handle_dlist_head(stack_t *head);
+
+/* get the opcode and check if the argument of push in an integer */
+char *split_str(char *str_to_split);
+
+/* helper functions */
+void is_digit(char *number);
+int line_validator(char *str);
+size_t dlistint_len(stack_t *h);
+
+/* opcode functions */
+void op_push(stack_t **stack, unsigned int line_number);
+void op_pall(stack_t **stack, unsigned int line_number);
+void op_pint(stack_t **stack, unsigned int line_number);
+void op_swap(stack_t **stack, unsigned int line_number);
+void op_pop(stack_t **stack, unsigned int line_number);
+void op_add(stack_t **stack, unsigned int line_number);
+void op_nop(stack_t **stack, unsigned int line_number);
+void op_sub(stack_t **stack, unsigned int line_number);
+void op_div(stack_t **stack, unsigned int line_number);
+void op_mul(stack_t **stack, unsigned int line_number);
+void op_mod(stack_t **stack, unsigned int line_number);
 
 #endif /* MONTY_H */
