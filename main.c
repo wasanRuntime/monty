@@ -1,47 +1,78 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "monty.h"
 
-vars var;
+/**
+ * error_usage - prints usage message and exits
+ *
+ * Return: nothing
+ */
+void error_usage(void)
+{
+	fprintf(stderr, "USAGE: monty file\n");
+	exit(EXIT_FAILURE);
+}
 
 /**
- * main - Start LIFO, FILO program
- * @ac: Number of arguments
- * @av: Pointer containing arguments
- * Return: 0 Success, 1 Failed
+ * file_error - prints file error message and exits
+ * @argv: argv given by manin
+ *
+ * Return: nothing
  */
-int main(int ac, char **av)
+void file_error(char *argv)
 {
-	char *opcode;
+	fprintf(stderr, "Error: Can't open file %s\n", argv);
+	exit(EXIT_FAILURE);
+}
 
-	if (ac != 2)
+int status = 0;
+/**
+ * main - entry point
+ * @argv: list of arguments passed to our program
+ * @argc: ammount of args
+ *
+ * Return: nothing
+ */
+int main(int argc, char **argv)
+{
+	FILE *file;
+	size_t buf_len = 0;
+	char *buffer = NULL;
+	char *str = NULL;
+	stack_t *stack = NULL;
+	unsigned int line_cnt = 1;
+
+	global.data_struct = 1;
+	if (argc != 2)
+		error_usage();
+
+	file = fopen(argv[1], "r");
+
+	if (!file)
+		file_error(argv[1]);
+
+	while (getline(&buffer, &buf_len, file) != -1)
 	{
-		fprintf(stderr, "USAGE: monty file\n");
-		return (EXIT_FAILURE);
+		if (status)
+			break;
+		if (*buffer == '\n')
+		{
+			line_cnt++;
+			continue;
+		}
+		str = strtok(buffer, " \t\n");
+		if (!str || *str == '#')
+		{
+			line_cnt++;
+			continue;
+		}
+		global.argument = strtok(NULL, " \t\n");
+		opcode(&stack, str, line_cnt);
+		line_cnt++;
 	}
-
-	if (start_vars(&var) != 0)
-		return (EXIT_FAILURE);
-
-	var.file = fopen(av[1], "r");
-	if (!var.file)
-	{
-		fprintf(stderr, "Error: Can't open file %s\n", av[1]);
-		free_all();
-		return (EXIT_FAILURE);
-	}
-
-	while (getline(&var.buff, &var.tmp, var.file) != EOF)
-	{
-		opcode = strtok(var.buff, " \r\t\n");
-		if (opcode != NULL)
-			if (call_funct(&var, opcode) == EXIT_FAILURE)
-			{
-				free_all();
-				return (EXIT_FAILURE);
-			}
-		var.line_number++;
-	}
-
-	free_all();
-
-	return (EXIT_SUCCESS);
+	free(buffer);
+	free_stack(stack);
+	fclose(file);
+	exit(status);
 }
