@@ -21,27 +21,6 @@ int line_validator(char *str)
 
 	return (flag);
 }
-/**
- * dlistint_len - returns the number of elements in a d linked list
- * @h: head of the linked list
- *
- * Return: the number of nodes
- */
-size_t dlistint_len(stack_t *h)
-{
-	size_t n_nodes = 0;
-
-	if (h == NULL)
-	{
-		return (0);
-	}
-	while (h != NULL)
-	{
-		h = h->next;
-		n_nodes++;
-	}
-	return (n_nodes);
-}
 
 /**
  * is_digit - check is digit
@@ -80,4 +59,26 @@ void is_digit(char *number)
 			exit(EXIT_FAILURE);
 		}
 	}
+}
+
+/**
+ * dlistint_len - returns the number of elements in a d linked list
+ * @h: head of the linked list
+ *
+ * Return: the number of nodes
+ */
+size_t dlistint_len(stack_t *h)
+{
+	size_t n_nodes = 0;
+
+	if (h == NULL)
+	{
+		return (0);
+	}
+	while (h != NULL)
+	{
+		h = h->next;
+		n_nodes++;
+	}
+	return (n_nodes);
 }
