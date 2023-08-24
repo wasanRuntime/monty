@@ -1,6 +1,6 @@
 #include "monty.h"
-#include "montycontext.h"
 
+global_t var;
 /**
  *  main -  interpreter for Monty ByteCodes files
  *  @argc: Number of paramethers
@@ -10,13 +10,11 @@
  */
 int main(int argc, char **argv)
 {
-	MontyContext var;
 	size_t line_buf_size = 0;
 
 	var.getl_info = NULL;
 	var.stack_head = NULL;
 	var.n_lines = 0;
-
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
@@ -33,8 +31,8 @@ int main(int argc, char **argv)
 		var.n_lines++;
 		if (line_validator(var.getl_info) == 1)
 			continue;
-		/*Pass the MontyContext instance to the function*/
-		execute_opcode(split_str(var.getl_info), &var);
+		/*split_str(var.getl_info);*/
+		execute_opcode(split_str(var.getl_info));
 	}
 	free(var.getl_info);
 	handle_dlist_head(var.stack_head);
